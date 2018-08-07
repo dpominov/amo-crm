@@ -6,14 +6,6 @@
 
 namespace AmoCrm;
 
-require_once('config.php');
-require_once('AmoCrmApi.php');
-
-require_once('Models/Leads.php');
-require_once('Models/Contacts.php');
-require_once('Models/Notes.php');
-require_once('Tools.php');
-
 /**
  * Class AmoCrm Класс работы с API AmoCrm. В основном создание контакта и сопутствующих задач, примечаний.
  * Создан на основе кривоватых примеров из документации. Требует дальнейшего рефакторинга и разделения работы с API и

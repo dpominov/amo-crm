@@ -8,9 +8,6 @@ namespace AmoCrm\Models;
 
 use AmoCrm\AmoCrmApi;
 
-require_once(__DIR__ . '/../config.php');
-require_once(__DIR__ . '/../AmoCrmApi.php');
-
 class BaseModel
 {
     protected $type;

@@ -6,8 +6,6 @@
 
 namespace AmoCrm\Models;
 
-require_once('BaseModel.php');
-
 class Notes extends BaseModel
 {
     const ELEMENT_TYPE_CONTACT = 1;
