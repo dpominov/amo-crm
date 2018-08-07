@@ -10,11 +10,26 @@
         }
     ],
     "require": {
-        "php": ">=7.1.0"
+        "php": ">=7.1.0",
+        "dpominov/base-data-model":"1.0"
     },
     "autoload": {
         "psr-4": {
             "AmoCRM\\": "src"
+        }
+    },
+    "repositories": {
+        "base-data-model": {
+            "type": "package",
+            "package": {
+                "name": "dpominov/base-data-model",
+                "version": "1.0",
+                "source": {
+                    "url": "https://github.com/dpominov/base-data-model.git",
+                    "type": "git",
+                    "reference": "origin/master"
+                }
+            }
         }
     }
 }
