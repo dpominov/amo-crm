@@ -202,8 +202,7 @@ class ApiClient implements DataProviderInterface
      */
     public function getAccountInfo()
     {
-        $response = $this->runCurl('v2/json/accounts/current');
-        return $response['response']['account'];
+        return $this->runCurl('api/v2/account?with=custom_fields');
     }
 
 
