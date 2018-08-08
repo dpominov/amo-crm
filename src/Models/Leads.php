@@ -15,7 +15,7 @@ class Leads extends BaseModel
     public $price;
 
 
-    protected function getData()
+    public function getData()
     {
         $data = [
             'name' => $this->name,

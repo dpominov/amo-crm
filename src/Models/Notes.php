@@ -26,7 +26,7 @@ class Notes extends BaseModel
     public $text;
 
 
-    protected function getData()
+    public function getData()
     {
         $data = [
             'element_id' => $this->element_id,

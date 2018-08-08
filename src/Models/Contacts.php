@@ -21,7 +21,7 @@ class Contacts extends BaseModel
     public $linked_leads_id = [];
 
 
-    protected function getData()
+    public function getData()
     {
         $data = [
             'name' => $this->name,
