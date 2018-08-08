@@ -6,14 +6,16 @@
 
 namespace AmoCrm;
 
+use BaseDataModel\BaseDataModelInterface;
+use BaseDataModel\DataProviderInterface;
+
 /**
  * Class AmoCrmApi
  */
-class AmoCrmApi
+class ApiClient implements DataProviderInterface
 {
-    private $subdomain;
-    private $userLogin;
-    private $userHash;
+    private static $config;
+    private static $instance;
 
     private $hash;
 
@@ -24,16 +26,84 @@ class AmoCrmApi
     public static $authCache = [];
 
 
-    public function __construct($subdomain, $userLogin, $userHash)
+    private function __construct()
     {
-        $this->subdomain = $subdomain;
-        $this->userLogin = $userLogin;
-        $this->userHash = $userHash;
-        $this->hash = $this->subdomain . $this->userLogin . $this->userHash;
+        $this->hash = self::$config['domain'] . self::$config['login'] . self::$config['hash'];
 
         $this->auth();
         $this->loadField();
     }
+
+
+    public static function instance()
+    {
+        if (!self::$instance) {
+            if ($error = self::validateConfig(self::$config)) {
+                throw new Exception($error);
+            }
+
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+
+    public static function setConfig($config)
+    {
+        if ($error = self::validateConfig($config)) {
+            throw new Exception($error);
+        }
+
+        self::$config = $config;
+    }
+
+
+    private static function validateConfig($config)
+    {
+        if (empty($config['domain'])) {
+            return 'Domain required';
+        }
+
+        if (empty($config['login'])) {
+            return 'Login required';
+        }
+
+        if (empty($config['hash'])) {
+            return 'Api hash required';
+        }
+
+        return '';
+    }
+
+
+    public function add(BaseDataModelInterface $entity)
+    {
+        $res = $this->getIdsFromResponse($this->addEntities($entity->getType(), [$entity->getData()]));
+
+        return $res[0] ?? 0;
+    }
+
+
+    public function update(BaseDataModelInterface $entity, $id)
+    {
+        $this->updateEntities($entity->getType(), [$entity->getData()]);
+    }
+
+
+    public function get(BaseDataModelInterface $entity, $id)
+    {
+        $res = $this->getEntities($entity->getType(), ['id' => $id]);
+
+        return $res[0] ?? [];
+    }
+
+
+    public function delete(BaseDataModelInterface $entity, $id)
+    {
+
+    }
+
 
     /**
      * Работа с Curl
@@ -49,13 +119,13 @@ class AmoCrmApi
         #Устанавливаем необходимые опции для сеанса cURL
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
-        curl_setopt($curl, CURLOPT_URL, 'https://' . $this->subdomain . '.amocrm.ru/private/api/' . $link);
+        curl_setopt($curl, CURLOPT_URL, 'https://' . self::$config['domain'] . '.amocrm.ru/private/api/' . $link);
 
         if ('POST' == $type) {
             curl_setopt($curl, CURLOPT_POST, true);
             curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query([
-                'USER_LOGIN' => $this->userLogin,
-                'USER_HASH' => $this->userHash,
+                'USER_LOGIN' => self::$config['login'],
+                'USER_HASH' => self::$config['hash'],
             ]));
         } elseif ('CUSTOMREQUEST' == $type) {
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -278,5 +348,18 @@ class AmoCrmApi
     public function getFieldId($fieldName)
     {
         return isset(self::$fields[$this->hash][$fieldName]) ? self::$fields[$this->hash][$fieldName] : false;
+    }
+
+
+    private function getIdsFromResponse($response)
+    {
+        $ids = [];
+        foreach ($response as $v) {
+            if (is_array($v)) {
+                $ids[] = $v['id'];
+            }
+        }
+
+        return $ids;
     }
 }
