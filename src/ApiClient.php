@@ -119,7 +119,7 @@ class ApiClient implements DataProviderInterface
         #Устанавливаем необходимые опции для сеанса cURL
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
-        curl_setopt($curl, CURLOPT_URL, 'https://' . self::$config['domain'] . '.amocrm.ru/private/api/' . $link);
+        curl_setopt($curl, CURLOPT_URL, 'https://' . self::$config['domain'] . '.amocrm.ru/' . $link);
 
         if ('POST' == $type) {
             curl_setopt($curl, CURLOPT_POST, true);
@@ -189,7 +189,7 @@ class ApiClient implements DataProviderInterface
     public function auth()
     {
         if (empty(self::$authCache[$this->hash])) {
-            $response = $this->runCurl('auth.php?type=json', 'POST');
+            $response = $this->runCurl('private/api/auth.php?type=json', 'POST');
             self::$authCache[$this->hash] = isset($response['response']['auth']) ? $response['response']['auth'] : false;
         }
 
@@ -213,7 +213,7 @@ class ApiClient implements DataProviderInterface
      */
     public function getContactByQuery($query)
     {
-        $response = $this->runCurl('v2/json/contacts/list?query=' . $query);
+        $response = $this->runCurl('private/api/v2/json/contacts/list?query=' . $query);
         return isset($response['response']['contacts']) ? $response['response']['contacts'] : [];
     }
 
@@ -224,7 +224,7 @@ class ApiClient implements DataProviderInterface
      */
     public function getContact($id)
     {
-        $response = $this->runCurl('v2/json/contacts/list?id=' . $id);
+        $response = $this->runCurl('private/api/v2/json/contacts/list?id=' . $id);
         return isset($response['response']['contacts'][0]) ? $response['response']['contacts'][0] : [];
     }
 
@@ -238,7 +238,7 @@ class ApiClient implements DataProviderInterface
      */
     public function getEntities($type, $data, $subType = 'list')
     {
-        $response = $this->runCurl("v2/json/$type/$subType?" . http_build_query($data));
+        $response = $this->runCurl("private/api/v2/json/$type/$subType?" . http_build_query($data));
 
         $responseType = 'list' == $subType ? $type : $subType;
         return isset($response['response'][$responseType]) ? $response['response'][$responseType] : [];
@@ -255,7 +255,7 @@ class ApiClient implements DataProviderInterface
     public function addEntities($type, $entities)
     {
         $set['request'][$type]['add'] = $entities;
-        $response = $this->runCurl("v2/json/$type/set", 'CUSTOMREQUEST', $set);
+        $response = $this->runCurl("private/api/v2/json/$type/set", 'CUSTOMREQUEST', $set);
 
         return $response['response'][$type]['add'];
     }
@@ -271,7 +271,7 @@ class ApiClient implements DataProviderInterface
     public function updateEntities($type, $entities)
     {
         $set['request'][$type]['update'] = $entities;
-        $response = $this->runCurl("v2/json/$type/set", 'CUSTOMREQUEST', $set);
+        $response = $this->runCurl("private/api/v2/json/$type/set", 'CUSTOMREQUEST', $set);
 
         return $response['response'][$type]['update'];
     }
