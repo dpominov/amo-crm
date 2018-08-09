@@ -6,28 +6,28 @@
 
 namespace AmoCrm\Models;
 
+/**
+ * Class Contacts
+ * @package AmoCrm\Models
+ *
+ * @property string $name
+ * @property array $linked_leads_id
+ * @property string $company_name
+ */
 class Contacts extends BaseModel
 {
     protected $type = 'contacts';
 
-    public $name;
     public $phone;
     public $email;
-    public $company_name;
     public $position;
     public $web;
     public $im;
 
-    public $linked_leads_id = [];
-
 
     public function getData()
     {
-        $data = [
-            'name' => $this->name,
-            'linked_leads_id' => $this->linked_leads_id,
-            'company_name' => $this->company_name,
-        ];
+        $data = [];
 
         if ($id = $this->api->getFieldId('PHONE')) {
             $data['custom_fields'][] = [
@@ -82,7 +82,7 @@ class Contacts extends BaseModel
         }
 
         return $this->update(
-            ['linked_leads_id' => array_merge($this->linked_leads_id, $leadsId)]
+            ['linked_leads_id' => array_merge($this['linked_leads_id'], $leadsId)]
         );
     }
 
@@ -95,14 +95,13 @@ class Contacts extends BaseModel
         }
 
         $contact = new Contacts();
-        $searchRes = $contact->api->getEntities($contact->type, ['query' => $phone]);
+        $searchRes = $contact->getApiClient()->getEntities($contact->type, ['query' => $phone]);
 
         if (empty($searchRes[0])) {
 
             return false;
         } else {
-            $contact->data = $searchRes[0];
-            $contact->id = isset($contact->data['id']) ? $contact->data['id'] : 0;
+            $contact->setData($searchRes[0]);
         }
 
         return $contact;
@@ -117,6 +116,6 @@ class Contacts extends BaseModel
 
     public function getRelationLeads()
     {
-        return $this->api->getEntities($this->type, ['contacts_link' => [$this->id]], 'links');
+        return $this->getApiClient()->getEntities($this->type, ['contacts_link' => [$this->id]], 'links');
     }
 }

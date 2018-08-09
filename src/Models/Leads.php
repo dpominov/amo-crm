@@ -6,23 +6,15 @@
 
 namespace AmoCrm\Models;
 
+/**
+ * Class Leads
+ * @package AmoCrm\Models
+ *
+ * @property string $name
+ * @property int $status_id
+ * @property int $sale
+ */
 class Leads extends BaseModel
 {
     protected $type = 'leads';
-
-    public $name;
-    public $status_id;
-    public $price;
-
-
-    public function getData()
-    {
-        $data = [
-            'name' => $this->name,
-            'status_id' => $this->status_id,
-            'price' => $this->price,
-        ];
-
-        return array_merge($data, parent::getData());
-    }
 }
