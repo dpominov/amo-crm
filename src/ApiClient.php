@@ -239,8 +239,27 @@ class ApiClient implements DataProviderInterface
      * @param array $data
      * @param string $subType
      * @return array
+     * @throws Exception
      */
-    public function getEntities($type, $data, $subType = 'list')
+    public function getEntities($type, $data, $subType = '')
+    {
+        $subTypeQuery = $subType ? "/$subType" : '';
+        $response = $this->runCurl("api/v2/{$type}{$subTypeQuery}?" . http_build_query($data));
+
+        return $type == 'account' ? $response : ($response['_embedded']['items'] ?? []);
+    }
+
+
+    /**
+     * @deprecated
+     *
+     * @param string $type тип сущности
+     * @param $data
+     * @param string $subType
+     * @return array
+     * @throws Exception
+     */
+    public function getEntitiesOld($type, $data, $subType = 'list')
     {
         $response = $this->runCurl("private/api/v2/json/$type/$subType?" . http_build_query($data));
 
