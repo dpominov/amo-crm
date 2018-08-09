@@ -31,7 +31,6 @@ class ApiClient implements DataProviderInterface
         $this->hash = self::$config['domain'] . self::$config['login'] . self::$config['hash'];
 
         $this->auth();
-        $this->loadField();
     }
 
 
@@ -203,15 +202,6 @@ class ApiClient implements DataProviderInterface
 
 
     /**
-     * Получаем информацию об аккаунте
-     */
-    public function getAccountInfo()
-    {
-        return $this->runCurl('api/v2/account?with=custom_fields');
-    }
-
-
-    /**
      * @param string $query строка по которой искать контакт, обычно или телефон или эмейл
      * @return mixed
      */
@@ -301,33 +291,6 @@ class ApiClient implements DataProviderInterface
 
 
     /**
-     * Получаем информацию об полях
-     * @return array полей вида [Имя поля => id, ]
-     */
-    public function getFields()
-    {
-        $account = $this->getAccountInfo();
-        if (!isset($account['custom_fields']['contacts'])) {
-
-            return [];
-        }
-
-        $fields = [];
-        foreach ($account['custom_fields']['contacts'] as $field) {
-            if (isset($field['id'])) {
-                if (isset($field['code'])) {
-                    $fields[$field['code']] = (int)$field['id'];
-                } elseif (isset($field['name'])) {
-                    $fields[$field['name']] = (int)$field['id'];
-                }
-            }
-        }
-
-        return $fields;
-    }
-
-
-    /**
      * Получение информации о контакте по его эмейлу или телефону
      * @param string|array $contacts телефон/ы и/или эмейл/ы по которым искать контакт
      * @return array информации о контакте
@@ -350,22 +313,6 @@ class ApiClient implements DataProviderInterface
         return [];
     }
 
-
-    /**
-     * Получаем информацию об аккаунте
-     */
-    private function loadField()
-    {
-        if (empty(self::$fields[$this->hash])) {
-            self::$fields[$this->hash] = $this->getFields();
-
-            if (!self::$fields[$this->hash]) {
-                throw new \Exception('Невозможно получить ID полей');
-            }
-        }
-
-        return self::$fields[$this->hash];
-    }
 
 
     public function getFieldId($fieldName)
