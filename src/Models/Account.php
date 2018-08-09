@@ -6,6 +6,7 @@
 
 namespace AmoCrm\Models;
 
+use AmoCrm\ApiClient;
 use AmoCrm\Exception;
 
 // TODO: отказаться от BaseModel в пользу трейта реализующего ArrayAccess и убрать костылиь - подобие синглтона
