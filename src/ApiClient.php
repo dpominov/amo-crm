@@ -104,6 +104,11 @@ class ApiClient implements DataProviderInterface
 
     }
 
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
 
     /**
      * Работа с Curl
@@ -190,7 +195,7 @@ class ApiClient implements DataProviderInterface
     {
         if (empty(self::$authCache[$this->hash])) {
             $response = $this->runCurl('private/api/auth.php?type=json', 'POST');
-            self::$authCache[$this->hash] = isset($response['response']['auth']) ? $response['response']['auth'] : false;
+            self::$authCache[$this->hash] = $response['response']['auth'] ?? false;
         }
 
         return self::$authCache[$this->hash];
