@@ -21,8 +21,7 @@ class Account extends BaseModel
     {
         $hash = ApiClient::instance()->getHash();
         if (empty(self::$instance[$hash])) {
-            parent::__construct();
-            $data = $this->getApiClient()->getEntities($this->type, ['with' => 'custom_fields']);
+            $data = ApiClient::instance()->getEntities($this->type, ['with' => 'custom_fields']);
             if (!$data) {
                 throw new Exception('Не удалось получить информацию по аккаунту');
             }
