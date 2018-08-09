@@ -7,6 +7,7 @@
 namespace AmoCrm\Models;
 
 use AmoCrm\ApiClient;
+use AmoCrm\Exception;
 use BaseDataModel\BaseDataModel;
 
 class BaseModel extends BaseDataModel
@@ -65,23 +66,40 @@ class BaseModel extends BaseDataModel
             return false;
         }
 
-        if ($key = array_search($fieldInfo['id'], array_column($this['custom_fields'], 'id'))) {
+        if (!empty($this['custom_fields']) && $key = array_search($fieldInfo['id'], array_column($this['custom_fields'], 'id'))) {
             $this['custom_fields'][$key]['values'] = $values;
         } else {
-            $this['custom_fields'][] = ['id' => $fieldInfo['id'], 'values' => $values];
+            // так как $this не настоящий массив, а ArrayAccess то приходится делать обновление через переменную
+            $customFields = $this['custom_fields'];
+            $customFields[] = ['id' => $fieldInfo['id'], 'values' => $values];
+            $this['custom_fields'] = $customFields;
         }
 
         return true;
     }
 
 
+    /**
+     * @param $fieldName
+     * @return null
+     * @throws Exception
+     */
     private function getCustomFieldInfoByName($fieldName)
     {
         $customFields = $this->account->getCustomFields($this->type);
-        // TODO: проверку на дубли имен
-        $key = array_search($fieldName, array_column($customFields, 'name'));
 
-        return $key ? $customFields[$key] : null;
+        $index = false;
+        foreach ($customFields as $key => $field) {
+            if ($field['name'] === $fieldName) {
+                if ($index !== false) {
+                    throw new Exception("Обнаружены дополнительные поля с совпадающим именем '$fieldName' ID=$index и ID=$key");
+                }
+
+                $index = $key;
+            }
+        }
+
+        return $index !== false ? $customFields[$index] : null;
     }
 
 
