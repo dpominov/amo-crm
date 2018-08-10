@@ -81,7 +81,7 @@ class BaseModel extends BaseDataModel
 
     /**
      * @param $fieldName
-     * @return null
+     * @return array|null
      * @throws Exception
      */
     private function getCustomFieldInfoByName($fieldName)

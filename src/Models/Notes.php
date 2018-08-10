@@ -23,15 +23,19 @@ class Notes extends BaseModel
     const TYPE_DEAL_CREATED = 1;
     const TYPE_CONTACT_CREATED = 2;
     const TYPE_DEAL_STATUS_CHANGED = 3;
-    const TYPE_COMMON = 4; /* Обычное примечание */
+    const TYPE_COMMON = 4; // Обычное примечание
     const TYPE_ATTACHMENT = 5;
     const TYPE_CALL = 6;
     const TYPE_EMAIL_MESSAGE = 7;
     const TYPE_EMAIL_ATTACHMENT = 8;
+    const TYPE_EXTERNAL_ATTACH = 9;
     const TYPE_CALL_IN = 10;
     const TYPE_CALL_OUT = 11;
     const TYPE_COMPANY_CREATED = 12;
     const TYPE_TASK_RESULT = 13;
+    const TYPE_CHAT = 17;
+    const TYPE_MAX_SYSTEM = 99;
+    const TYPE_DROPBOX = 101;
     const TYPE_SMS_IN = 102;
     const TYPE_SMS_OUT = 103;
 
