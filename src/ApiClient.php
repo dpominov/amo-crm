@@ -231,10 +231,11 @@ class ApiClient implements DataProviderInterface
      * @return array
      * @throws Exception
      */
-    public function getEntities($type, $data, $subType = '')
+    public function getEntities($type, $data = [], $subType = '')
     {
         $subTypeQuery = $subType ? "/$subType" : '';
-        $response = $this->runCurl("api/v2/{$type}{$subTypeQuery}?" . http_build_query($data));
+        $queryParams = $data ? '?' . http_build_query($data) : '';
+        $response = $this->runCurl("api/v2/{$type}{$subTypeQuery}" . $queryParams);
 
         return $type == 'account' ? $response : ($response['_embedded']['items'] ?? []);
     }
@@ -312,7 +313,6 @@ class ApiClient implements DataProviderInterface
 
         return [];
     }
-
 
 
     public function getFieldId($fieldName)
