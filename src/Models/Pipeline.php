@@ -6,7 +6,7 @@
 
 namespace AmoCrm\Models;
 
-class Funnels extends BaseModel
+class Pipeline extends BaseModel
 {
     protected $type = 'pipelines';
 }
