@@ -18,55 +18,6 @@ class Contacts extends BaseModel
 {
     protected $type = 'contacts';
 
-    public $phone;
-    public $email;
-    public $position;
-    public $web;
-    public $im;
-
-
-    public function getData()
-    {
-        $data = [];
-
-        if ($id = $this->api->getFieldId('PHONE')) {
-            $data['custom_fields'][] = [
-                'id' => $id,
-                'values' => [['value' => $this->phone, 'enum' => 'OTHER']]
-            ];
-        }
-
-        if ($id = $this->api->getFieldId('EMAIL')) {
-            $data['custom_fields'][] = [
-                'id' => $id,
-                'values' => [['value' => $this->email, 'enum' => 'WORK']]
-            ];
-        }
-
-        if ($id = $this->api->getFieldId('POSITION')) {
-            $data['custom_fields'][] = [
-                'id' => $id,
-                'values' => [['value' => $this->position]]
-            ];
-        }
-
-        if ($id = $this->api->getFieldId('WEB')) {
-            $data['custom_fields'][] = [
-                'id' => $id,
-                'values' => [['value' => $this->web]]
-            ];
-        }
-
-        if ($id = $this->api->getFieldId('IM')) {
-            $data['custom_fields'][] = [
-                'id' => $id,
-                'values' => [['value' => $this->im]]
-            ];
-        }
-
-        return array_merge($data, parent::getData());
-    }
-
 
     public function addLead($leadId)
     {
