@@ -52,7 +52,19 @@ class BaseModel extends BaseDataModel
 
         $values = $this['custom_fields'][$key]['values'];
 
-        return count($values) == 1 ? $values[0] : $values;
+        $result = [];
+        if (is_array($values)) {
+            foreach ($values as $value) {
+                if (!empty($value['enum'])) {
+                    // TODO конвертировать id enum в имя
+                    $result[$value['enum']] = $value['value'];
+                } else {
+                    $result[] = $value['value'];
+                }
+            }
+        }
+
+        return $result ?: $values;
     }
 
 
