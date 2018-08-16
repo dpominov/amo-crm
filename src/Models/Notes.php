@@ -13,12 +13,15 @@ namespace AmoCrm\Models;
  * @property int $element_id id контакта или сделки
  * @property int $element_type тип привязываемого елемента
  * @property int $note_type тип примечания
- * @property string $text текст задачи
+ * @property string $text текст события
  */
 class Notes extends BaseModel
 {
     const ELEMENT_TYPE_CONTACT = 1;
     const ELEMENT_TYPE_LEAD = 2;
+    const ELEMENT_TYPE_COMPANY= 3;
+    const ELEMENT_TYPE_TASK= 4;
+    const ELEMENT_TYPE_CUSTOMER = 12;
 
     const TYPE_DEAL_CREATED = 1;
     const TYPE_CONTACT_CREATED = 2;
