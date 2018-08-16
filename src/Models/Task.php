@@ -107,4 +107,18 @@ class Task extends BaseModel
 
         return $taskTypes[$taskId]['name'] ?? $taskId;
     }
+
+
+    /**
+     * Завершение задачи или отмена завршения
+     *
+     * @param bool $value true (по умолчанию) - завершение. false - отмена завершенного остоянияs
+     */
+    public function setComplete($value = true)
+    {
+        // это поле указано в документации, но по факту оно не завершает задачу. Выставляем на всякий случай.
+        $this['is_completed'] = $value;
+        // а этого поля нет в документации, оно завршает задачу.
+        $this['status'] = (int)$value;
+    }
 }
