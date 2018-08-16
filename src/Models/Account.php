@@ -21,7 +21,7 @@ class Account extends BaseModel
     {
         $hash = ApiClient::instance()->getHash();
         if (empty(self::$instance[$hash])) {
-            $data = ApiClient::instance()->getEntities($this->type, ['with' => 'custom_fields']);
+            $data = ApiClient::instance()->getEntities($this->type, ['with' => 'custom_fields,task_types']);
             if (!$data) {
                 throw new Exception('Не удалось получить информацию по аккаунту');
             }
@@ -48,5 +48,11 @@ class Account extends BaseModel
     public function getCustomFields($type = '')
     {
         return $type ? $this['_embedded']['custom_fields'][$type] : $this['_embedded']['custom_fields'];
+    }
+
+
+    public function getTaskTypes()
+    {
+        return $this['_embedded']['task_types'];
     }
 }
