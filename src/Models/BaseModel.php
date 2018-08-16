@@ -32,7 +32,7 @@ class BaseModel extends BaseDataModel
 
     public function update()
     {
-        $this['updated_at'] = time();
+        $this['last_modified'] = $this['updated_at'] = time();
 
         parent::update();
     }
