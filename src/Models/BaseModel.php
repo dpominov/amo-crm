@@ -12,16 +12,9 @@ use BaseDataModel\BaseDataModel;
 
 class BaseModel extends BaseDataModel
 {
-    /**
-     * @var Account
-     */
-    private $account;
-
-
     public function __construct($id = 0)
     {
         parent::__construct(ApiClient::instance(), $id);
-        $this->account = Account::instance();
     }
 
 
@@ -29,6 +22,13 @@ class BaseModel extends BaseDataModel
     {
         return ApiClient::instance();
     }
+
+
+    protected function getAccount()
+    {
+        return Account::instance();
+    }
+
 
     public function update()
     {
@@ -98,7 +98,7 @@ class BaseModel extends BaseDataModel
      */
     private function getCustomFieldInfoByName($fieldName)
     {
-        $customFields = $this->account->getCustomFields($this->type);
+        $customFields = $this->getAccount()->getCustomFields($this->type);
 
         $index = false;
         foreach ($customFields as $key => $field) {
