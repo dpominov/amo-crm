@@ -30,6 +30,10 @@ class ApiClient implements DataProviderInterface
     }
 
 
+    /**
+     * @return ApiClient
+     * @throws Exception
+     */
     public static function instance()
     {
         if (!self::$instance) {
@@ -44,6 +48,10 @@ class ApiClient implements DataProviderInterface
     }
 
 
+    /**
+     * @param $config
+     * @throws Exception
+     */
     public static function setConfig($config)
     {
         if ($error = self::validateConfig($config)) {
@@ -54,6 +62,10 @@ class ApiClient implements DataProviderInterface
     }
 
 
+    /**
+     * @param $config
+     * @return string
+     */
     private static function validateConfig($config)
     {
         if (empty($config['domain'])) {
@@ -99,6 +111,7 @@ class ApiClient implements DataProviderInterface
 
     }
 
+
     public function getHash()
     {
         return $this->hash;
@@ -107,6 +120,9 @@ class ApiClient implements DataProviderInterface
 
     /**
      * Работа с Curl
+     *
+     * TODO: переделать на curl_setopt_array, разделить get и post запросы
+     *
      * @param $link
      * @param null $type
      * @param null $set
@@ -153,7 +169,7 @@ class ApiClient implements DataProviderInterface
 
     /**
      * @param $code
-     * @throws \Exception
+     * @throws Exception
      */
     private function checkCurlResponse($code, $out, $link, $type, $set)
     {
@@ -173,7 +189,7 @@ class ApiClient implements DataProviderInterface
         if ($code != 200 && $code != 204) {
             $out = json_decode($out, true);
 
-            throw new \Exception('Ошибка: "' . (isset($errors[$code]) ? $errors[$code] : 'Undescribed error') . "\n"
+            throw new Exception('Ошибка: "' . (isset($errors[$code]) ? $errors[$code] : 'Undescribed error') . "\n"
                 . (isset($out['response']['error']) ? $out['response']['error'] : '') . "
 			Link=$link
             type=$type
@@ -184,7 +200,11 @@ class ApiClient implements DataProviderInterface
 
     /**
      * авторизация пользователя
-     * @return bool
+     *
+     * TODO: добавить инвалидацию кеша через 15 минут
+     *
+     * @return mixed
+     * @throws Exception
      */
     public function auth()
     {
@@ -239,6 +259,7 @@ class ApiClient implements DataProviderInterface
      * @param string $type тип сущности
      * @param array $entities данные (массив массивов)
      * @return mixed
+     * @throws Exception
      */
     public function addEntities($type, $entities)
     {
@@ -255,6 +276,7 @@ class ApiClient implements DataProviderInterface
      * @param string $type тип сущности
      * @param array $entities данные (массив массивов)
      * @return mixed
+     * @throws Exception
      */
     public function updateEntities($type, $entities)
     {
