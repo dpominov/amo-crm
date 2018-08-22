@@ -19,10 +19,6 @@ class ApiClient implements DataProviderInterface
 
     private $hash;
 
-    /**
-     * @var array для хранениея ID полей [Имя поля => id, ]
-     */
-    public static $fields = [];
     public static $authCache = [];
 
 
@@ -202,28 +198,6 @@ class ApiClient implements DataProviderInterface
 
 
     /**
-     * @param string $query строка по которой искать контакт, обычно или телефон или эмейл
-     * @return mixed
-     */
-    public function getContactByQuery($query)
-    {
-        $response = $this->runCurl('private/api/v2/json/contacts/list?query=' . $query);
-        return isset($response['response']['contacts']) ? $response['response']['contacts'] : [];
-    }
-
-
-    /**
-     * @param string $query строка по которой искать контакт, обычно или телефон или эмейл
-     * @return mixed
-     */
-    public function getContact($id)
-    {
-        $response = $this->runCurl('private/api/v2/json/contacts/list?id=' . $id);
-        return isset($response['response']['contacts'][0]) ? $response['response']['contacts'][0] : [];
-    }
-
-
-    /**
      *
      * @param string $type тип сущности
      * @param array $data
@@ -288,36 +262,6 @@ class ApiClient implements DataProviderInterface
         $response = $this->runCurl("private/api/v2/json/$type/set", 'CUSTOMREQUEST', $set);
 
         return $response['response'][$type]['update'];
-    }
-
-
-    /**
-     * Получение информации о контакте по его эмейлу или телефону
-     * @param string|array $contacts телефон/ы и/или эмейл/ы по которым искать контакт
-     * @return array информации о контакте
-     */
-    public function getContactByContacts($contacts)
-    {
-        if (!is_array($contacts)) {
-            $contacts = array($contacts);
-        }
-
-        foreach ($contacts as $contact) {
-            $response = $this->getContactByQuery($contact);
-
-            if (isset($response[0])) {
-
-                return $response[0];
-            }
-        }
-
-        return [];
-    }
-
-
-    public function getFieldId($fieldName)
-    {
-        return isset(self::$fields[$this->hash][$fieldName]) ? self::$fields[$this->hash][$fieldName] : false;
     }
 
 
