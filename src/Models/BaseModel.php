@@ -184,4 +184,17 @@ class BaseModel extends BaseDataModel
 
         return $values;
     }
+
+
+    /**
+     * Получение списка сущностей.
+     *
+     * @param array $query параметры запроса.
+     * @param null|string|int $modifiedSince дата обновления сущностей с которой они нужны.
+     * @return array
+     * @throws Exception
+     */
+    public function getList(array $query = [], $modifiedSince = null) {
+        return $this->getApiClient()->getEntities($this->type, $query, null, $modifiedSince);
+    }
 }

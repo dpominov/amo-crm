@@ -129,7 +129,7 @@ class ApiClient implements DataProviderInterface
      * @return array|mixed
      * @throws Exception
      */
-    private function runCurl($link, $type = null, $set = null)
+    private function runCurl($link, $type = null, $set = null, $modifiedSince = null)
     {
         $curl = curl_init(); #Сохраняем дескриптор сеанса cURL
         #Устанавливаем необходимые опции для сеанса cURL
@@ -137,6 +137,7 @@ class ApiClient implements DataProviderInterface
         curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
         curl_setopt($curl, CURLOPT_URL, 'https://' . self::$config['domain'] . '.amocrm.ru/' . $link);
 
+        $headers = [];
         if ('POST' == $type) {
             curl_setopt($curl, CURLOPT_POST, true);
             curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query([
@@ -146,7 +147,16 @@ class ApiClient implements DataProviderInterface
         } elseif ('CUSTOMREQUEST' == $type) {
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
             curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($set));
-            curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            $headers[] = 'Content-Type: application/json';
+        }
+
+        if ($modifiedSince) {
+            $dataTime = ((int)$modifiedSince ? '@' : '') . $modifiedSince;
+            $headers[] = 'If-Modified-Since: ' . (new \DateTime($dataTime))->format(\DateTime::RFC1123);
+        }
+
+        if ($headers) {
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         }
 
         curl_setopt($curl, CURLOPT_HEADER, false);
@@ -225,11 +235,11 @@ class ApiClient implements DataProviderInterface
      * @return array
      * @throws Exception
      */
-    public function getEntities($type, $data = [], $subType = '')
+    public function getEntities($type, $data = [], $subType = '', $modifiedSince = null)
     {
         $subTypeQuery = $subType ? "/$subType" : '';
         $queryParams = $data ? '?' . http_build_query($data) : '';
-        $response = $this->runCurl("api/v2/{$type}{$subTypeQuery}" . $queryParams);
+        $response = $this->runCurl("api/v2/{$type}{$subTypeQuery}" . $queryParams, null, null, $modifiedSince);
 
         return $type == 'account' ? $response : ($response['_embedded']['items'] ?? []);
     }
