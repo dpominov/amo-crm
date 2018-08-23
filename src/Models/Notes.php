@@ -19,8 +19,8 @@ class Notes extends BaseModel
 {
     const ELEMENT_TYPE_CONTACT = 1;
     const ELEMENT_TYPE_LEAD = 2;
-    const ELEMENT_TYPE_COMPANY= 3;
-    const ELEMENT_TYPE_TASK= 4;
+    const ELEMENT_TYPE_COMPANY = 3;
+    const ELEMENT_TYPE_TASK = 4;
     const ELEMENT_TYPE_CUSTOMER = 12;
 
     const TYPE_DEAL_CREATED = 1;
@@ -42,6 +42,9 @@ class Notes extends BaseModel
     const TYPE_SMS_IN = 102;
     const TYPE_SMS_OUT = 103;
 
+    // путь по которому доступны для скачивания файлы примечания
+    const DOWNLOAD_PATH = 'download/';
+
     protected $type = 'notes';
 
 
@@ -50,5 +53,21 @@ class Notes extends BaseModel
         $this['note_type'] = self::TYPE_COMMON;
 
         parent::__construct($id);
+    }
+
+
+    /**
+     * Получение файла прикрепленного к примечанию
+     *
+     * @return mixed|null
+     * @throws \AmoCrm\Exception
+     */
+    public function getAttachmentFile()
+    {
+        if (!$this['attachment']) {
+            return null;
+        }
+
+        return $this->getApiClient()->getFileByCurl(self::DOWNLOAD_PATH . $this['attachment']);
     }
 }
