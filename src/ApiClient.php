@@ -324,9 +324,9 @@ class ApiClient implements DataProviderInterface
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-//        curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
         curl_setopt($curl, CURLOPT_URL, 'https://' . self::$config['domain'] . '.amocrm.ru/' . $link);
 
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($curl, CURLOPT_HEADER, false);
         curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieFile);
         curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieFile);
@@ -338,7 +338,7 @@ class ApiClient implements DataProviderInterface
         curl_close($curl);
 
         if ($code != 200 && $code != 204) {
-            throw new Exception("Ошибка код: $code\nLink=$link");
+            throw new Exception("Ошибка загрузки файла код: $code Link=$link");
         }
 
         return $out;
