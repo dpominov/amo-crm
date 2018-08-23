@@ -311,4 +311,36 @@ class ApiClient implements DataProviderInterface
 
         return $ids;
     }
+
+
+    /**
+     * Получение файла по заданному урлу с куками авторизации
+     *
+     * @param string $link относительная ссылка на файл
+     * @return mixed
+     * @throws Exception
+     */
+    public function getFileByCurl($link)
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+//        curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-API-client/1.0');
+        curl_setopt($curl, CURLOPT_URL, 'https://' . self::$config['domain'] . '.amocrm.ru/' . $link);
+
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieFile);
+        curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieFile);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+
+        $out = curl_exec($curl);
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        if ($code != 200 && $code != 204) {
+            throw new Exception("Ошибка код: $code\nLink=$link");
+        }
+
+        return $out;
+    }
 }
