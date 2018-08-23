@@ -17,6 +17,8 @@ class ApiClient implements DataProviderInterface
     private static $config;
     private static $instance;
 
+    private $cookieFile = __DIR__ . '/cookie.txt';
+
     private $hash;
 
     public static $authCache = [];
@@ -25,6 +27,7 @@ class ApiClient implements DataProviderInterface
     private function __construct()
     {
         $this->hash = self::$config['domain'] . self::$config['login'] . self::$config['hash'];
+        $this->cookieFile = self::$config['cookieFile'] ?? $this->cookieFile;
 
         $this->auth();
     }
@@ -160,8 +163,8 @@ class ApiClient implements DataProviderInterface
         }
 
         curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_COOKIEFILE, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
-        curl_setopt($curl, CURLOPT_COOKIEJAR, dirname(__FILE__) . '/cookie.txt'); #PHP>5.3.6 dirname(__FILE__) -> __DIR__
+        curl_setopt($curl, CURLOPT_COOKIEFILE, $this->cookieFile);
+        curl_setopt($curl, CURLOPT_COOKIEJAR, $this->cookieFile);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
 
