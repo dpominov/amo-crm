@@ -304,7 +304,7 @@ class ApiClient implements DataProviderInterface
     {
         $ids = [];
         foreach ($response as $v) {
-            if (is_array($v)) {
+            if (isset($v['id'])) {
                 $ids[] = $v['id'];
             }
         }
